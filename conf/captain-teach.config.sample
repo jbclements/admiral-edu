@@ -5,6 +5,7 @@ db-password=captain_teach
 db-user-name=captain_teach
 
 # The first time Captain Teach loads, it will add this user as an instructor
+# This must match the e-mail address that you use for authentication
 master-user=youremail@domain.com
 
 # These are used to generate complete links when sending email to users
@@ -20,7 +21,7 @@ mail-password=password
 # The class-name, this should match ClassName in apache-vars
 class-name=test-class
 
-# Select the port that apache will redirect incomming traffic
+# Select the port that apache will redirect incoming traffic to
 # This allows multiple instances of CT to run on the same machine
 # You probably don't need to change this
 ct-port=8080
