@@ -1,5 +1,5 @@
 
-ConfPath = $(shell pwd)/conf
+ConfPath = /home/clements/ct-conf
 
 TAG = captain-teach:latest
 
