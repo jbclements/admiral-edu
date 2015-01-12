@@ -18,6 +18,24 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get install -y apache2
 
 #
+# Install mod_authnz_persona
+#
+
+# Dependencies
+
+RUN wget https://launchpad.net/ubuntu/+source/yajl/2.0.4-2/+build/3450133/+files/libyajl2_2.0.4-2_amd64.deb
+RUN wget https://launchpad.net/ubuntu/+source/yajl/2.0.4-2/+build/3450133/+files/libyajl-dev_2.0.4-2_amd64.deb
+RUN dpkg -i libyajl2_2.0.4-2_amd64.deb libyajl-dev_2.0.4-2_amd64.deb
+
+RUN apt-get install make git gcc apache2 apache2-threaded-dev libcurl4-gnutls-dev
+RUN cd /tmp
+RUN git clone https://github.com/mozilla/mod_authnz_persona.git
+RUN cd mod_authnz_persona
+RUN APXS_PATH=/usr/bin/apxs2 make
+RUN APXS_PATH=/usr/bin/apxs2 make install
+
+
+#
 # Install mod_auth_openidc
 #
 
