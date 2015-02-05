@@ -23,18 +23,19 @@ RUN apt-get install -y apache2
 
 # Dependencies
 
-RUN wget https://launchpad.net/ubuntu/+source/yajl/2.0.4-2/+build/3450133/+files/libyajl2_2.0.4-2_amd64.deb
-RUN wget https://launchpad.net/ubuntu/+source/yajl/2.0.4-2/+build/3450133/+files/libyajl-dev_2.0.4-2_amd64.deb
-RUN dpkg -i libyajl2_2.0.4-2_amd64.deb libyajl-dev_2.0.4-2_amd64.deb
-
-## Oh my lord, installing the whole compiler...
-RUN apt-get install -y make git gcc apache2-threaded-dev libcurl4-gnutls-dev
-RUN git clone https://github.com/mozilla/mod_authnz_persona.git
-WORKDIR /root/mod_authnz_persona
-RUN APXS_PATH=/usr/bin/apxs2 make
-RUN APXS_PATH=/usr/bin/apxs2 make install
-
-WORKDIR /root
+#RUN wget https://launchpad.net/ubuntu/+source/yajl/2.0.4-2/+build/3450133/+files/libyajl2_2.0.4-2_amd64.deb
+#RUN wget https://launchpad.net/ubuntu/+source/yajl/2.0.4-2/+build/3450133/+files/libyajl-dev_2.0.4-2_amd64.deb
+#RUN dpkg -i libyajl2_2.0.4-2_amd64.deb libyajl-dev_2.0.4-2_amd64.deb
+#
+### Oh my lord, installing the whole compiler...
+#RUN apt-get install -y make git gcc apache2-threaded-dev libcurl4-gnutls-dev
+#RUN git clone https://github.com/mozilla/mod_authnz_persona.git
+#WORKDIR /root/mod_authnz_persona
+#RUN APXS_PATH=/usr/bin/apxs2 make
+#RUN APXS_PATH=/usr/bin/apxs2 make install
+## shouldn't this be part of the makefile... ? Is this debian-only?
+#RUN echo 'LoadModule authnz_persona_module /usr/lib/apache2/modules/mod_authnz_persona.so' > /etc/apache2/mods-available/authnz_persona.load
+#WORKDIR /root
 
 #
 # Install mod_auth_openidc
@@ -52,6 +53,7 @@ RUN dpkg -i libapache2-mod-auth-openidc_1.5_amd64.deb
 # Configure Apache
 #
 
+#RUN a2enmod authnz_persona
 RUN a2enmod auth_openidc
 RUN a2enmod proxy
 RUN a2enmod proxy_http
@@ -74,6 +76,10 @@ RUN ln -s /usr/racket/bin/raco /usr/local/bin/raco
 # Setup Captain Teach Server
 
 # Create User
+
+# deactivate chfn in a totally gross way
+RUN ln -s -f /bin/true /usr/bin/chfn
+
 RUN adduser --disabled-password --gecos "" admiraledu
 
 # Install Captain Teach Dependencies
