@@ -1,10 +1,10 @@
-FROM debian:8.5
-MAINTAINER John Clements <aoeudocker@brinckerhoff.org>
+FROM ubuntu:14.04
+MAINTAINER Joseph Collard <josephmcollard@gmail.com>
 
 WORKDIR /root
 USER root
 
-RUN apt-get update #force rerun
+RUN apt-get update
 
 RUN apt-get install -y wget
 
@@ -59,14 +59,10 @@ RUN a2enconf captain-teach
 ADD html/bin /var/www/html/bin
 ADD html/css /var/www/html/css
 ADD html/imgs /var/www/html/imgs
-ADD html/images var/www/html/images
 ADD code-mirror/mode /var/www/html/mode
 ADD code-mirror/lib /var/www/html/lib
 ADD html/logout.html /var/www/html/logout.html
-ADD docker/500.html /var/www/html/500.html
-ADD docker/503.html /var/www/html/503.html
-ADD docker/auth.html /var/www/html/auth/index.html
-Add author-tool/AuthoringTool.html /var/www/html/AuthoringTool.html
+
 #
 # Configure Supervisor
 #
@@ -91,7 +87,6 @@ ADD rubrics/implementation-rubric.json /home/admiraledu/reviews/cmpsci220/clock/
 ADD rubrics/tests-rubric.json /home/admiraledu/reviews/cmpsci220/clock/tests/rubric.json
 
 ADD html/index.html /var/www/html/index.html
-ADD html/about.html /var/www/html/about.html
 
 #
 # Run AdmiralEdu
