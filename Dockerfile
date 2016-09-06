@@ -36,7 +36,7 @@ RUN raco pkg install --no-setup --auto git://github.com/greghendershott/aws#f1bd
 RUN raco setup --no-docs aws
 
 ## NOTE: switching away from catalog lookup temporarily...
-RUN echo "hiya57cebd"
+RUN echo "hiya57cebd00"
 RUN raco pkg install --no-setup --auto git://github.com/jbclements/admiral-edu-server#master
 # RUN raco pkg install --auto admiral-edu-server
 RUN raco setup --no-docs admiral-edu-server
