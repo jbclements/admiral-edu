@@ -36,6 +36,10 @@ bucket=some-bucket-name/
 
 # If using cloud-storage:
 # The Cloud Storage REST API host
+# NOTE: currently, we're using an old version of
+# the aws package to allow connections to google
+# cloud storage, so changing this to amazon s3
+# will probably cause a failure.
 cloud-host=storage.googleapis.com
 
 # If using cloud-storage:

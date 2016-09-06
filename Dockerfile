@@ -29,6 +29,11 @@ RUN ln -s /usr/racket/bin/raco /usr/local/bin/raco
 RUN adduser --disabled-password --gecos "" admiraledu
 
 # Install Captain Teach Server
+
+## install aws manually to get a version that uses old V2 AWS signatures.
+## delete this line when the aws package works with google cloud storage.
+RUN raco pkg install --auto git://github.com/greghendershott/aws#f1bd5f7736b787fd407ad39e1dd567df4e241191
+
 ## NOTE: switching away from catalog lookup temporarily...
 RUN echo "hiya57ccbd"
 RUN raco pkg install --no-setup --auto git://github.com/jbclements/admiral-edu-server#master
