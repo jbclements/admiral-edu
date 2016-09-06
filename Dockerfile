@@ -32,10 +32,11 @@ RUN adduser --disabled-password --gecos "" admiraledu
 
 ## install aws manually to get a version that uses old V2 AWS signatures.
 ## delete this line when the aws package works with google cloud storage.
-RUN raco pkg install --auto git://github.com/greghendershott/aws#f1bd5f7736b787fd407ad39e1dd567df4e241191
+RUN raco pkg install --no-setup --auto git://github.com/greghendershott/aws#f1bd5f7736b787fd407ad39e1dd567df4e241191
+RUN raco setup --no-docs aws
 
 ## NOTE: switching away from catalog lookup temporarily...
-RUN echo "hiya57ccbd"
+RUN echo "hiya57cebd"
 RUN raco pkg install --no-setup --auto git://github.com/jbclements/admiral-edu-server#master
 # RUN raco pkg install --auto admiral-edu-server
 RUN raco setup --no-docs admiral-edu-server
