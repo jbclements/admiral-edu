@@ -1,24 +1,28 @@
-# The address to the MySQL database you are using
+# The address of the MySQL database you are using
 db-address=localhost
 db-name=captain_teach
 db-password=captain_teach
 db-user-name=captain_teach
 
 # The first time Captain Teach loads, it will add this user as an instructor
-master-user=youremail@domain.com
+# You're going to need to use google auth for this, so it's probably
+# easiest if it's a gmail address (I don't like this either).
+master-user=youremail@gmail.com
 
 # These are used to generate complete links when sending email to users
 server-name=yoursite.com
 sub-domain=www.
 
 # Mail Server information for sending email
+# Please note that you must separately configure the email sending
+# service with permissions to send email from your domain.
 mail-enable=true
 mail-server=smtp.sendgrid.net
 mail-port=2525
 mail-username=username
 mail-password=password
 
-# The class-name, this should match ClassName in apache-vars
+# The class-name, this should match the name used by the proxy server
 class-name=test-class
 
 # Select the port that apache will redirect incomming traffic
@@ -54,4 +58,4 @@ zip-binary=/usr/bin/zip
 # the location of the 'unzip' binary, used to extract archives
 unzip-binary=/usr/bin/unzip
 # the location of the 'tar' binary, used to extract only
-tar-binary=/usr/bin/tar
+tar-binary=/bin/tar

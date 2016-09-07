@@ -1,0 +1,212 @@
+How to start a new class vm.
+
+NB: These instructions assume that you've already got the proxy
+server running, and that you have a google project with credentials.
+
+1) use compute engine to create a new instance with an appropriate name,
+  e.g. calpoly-cs123
+- machine type "g1-small":
+- 1.7 GB
+- 1 vCPU
+- running debian 8
+- all other settings default
+
+2) use the network interface to assign a fixed external IP address to your
+  instance.
+
+But wait? why should you want an external IP? After all, this machine doesn't
+need to handle any incoming connections from any machine other than the
+proxy server! Unfortunately, currently the easiest way to get port 3306
+access to a google MySQL server is to specify a single legal source IP
+address, and it can't be the internal one. There are other ways to do
+this, but none of them are as simple as this, unfortunately.
+
+3) use the SQL interface to create a SQL server for your class.
+
+I created a "second-generation" SQL server running MySQL 5.7, with a
+failover node and a static IP. The static IP is the easiest way
+to make it possible for the server to communicate with the database,
+but currently, google does charge for static IPs on SQL servers.
+
+Also, I'm by no means confident that "second generation" is the right
+choice here.
+
+Finally, it's probably possible to put every single class' database
+onto the same SQL server. If anyone wants to save some money, this
+would be pretty darn simple. The obvious danger is that the classes
+would stomp each other. The right solution would probably be to
+create each class as a separate db "user". Then it's just up to
+the operator to not mess it up.
+
+- db-f1-micro
+- authorized networks: add the static IPV4 address of your instance here
+
+4) use the cloud storage interface to create a new bucket for your
+class.
+
+5) SSH into your new server.
+
+It appears to me that even after assigning a static IP, all ports are
+blocked by default (a good thing if true), so I go in through the
+proxy server, and then ssh to the internal IP.
+
+6) install whatever tools make you happy. I like to have tmux and
+netcat and probably an editor.
+
+7) make sure security updates are installed. I belive Google Compute
+Engine instances come with unattended-updates installed, so... you
+should be okay? ... or ... actually not. Looks like you need to
+install security updates by hand.
+
+As of 2016-09-06, you can apparently ignore this error:
+
+  File "lib/third_party/prompt_toolkit/examples/asyncio-prompt.py", line 26
+    async def print_counter():
+            ^
+SyntaxError: invalid syntax
+
+Compiling platform/gsutil/third_party/httplib2/python3/httplib2/__init__.py ...
+  File "platform/gsutil/third_party/httplib2/python3/httplib2/__init__.py", line 347
+    print('%s:' % h, end=' ', file=self._fp)
+                        ^
+SyntaxError: invalid syntax
+
+8) configure the SQL database. This is also a good chance to make sure
+that you can connect to it
+
+apt-get install mysql-client
+
+the google MySQL clients come up with no password for root, so it seems
+a bit weird to create one for captain_teach, but what the heck.
+
+mysql -h <ip-address-of-sql-server> -u root
+
+mysql> CREATE DATABASE captain_teach;
+Query OK, 1 row affected (0.07 sec)
+
+mysql> CREATE USER captain_teach IDENTIFIED BY 'captain_teach';
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> GRANT ALL on captain_teach TO captain_teach;
+ERROR 1046 (3D000): No database selected
+mysql> GRANT ALL ON captain_teach.* TO captain_teach;
+Query OK, 0 rows affected (0.04 sec)
+
+... and you're done. If this freaks you out, try connecting to
+the sql server's ip address from outside, just to make sure
+it's correctly firewalled. I did.
+
+9) install docker. What a pain. See instructions on this page:
+
+https://docs.docker.com/engine/installation/linux/debian/
+
+apt-get update
+apt-get install apt-transport-https ca-certificates
+
+edit the sources list to contain the docker repos
+
+apt-get install docker-engine
+
+note that you shouldn't need to manually start the service. Since Jessie went
+with systemd, you can check that it's running with
+
+systemctl status docker
+
+10) fetch captain teach. Currently the tag is 57cf4b23, so this looks like
+
+sudo docker pull jbclements/captain-teach:57cf4b23
+
+11) create a ct-conf directory, and put a file in it called captain-teach.config.
+
+Here's a template:
+
+*** START:
+
+# The address of the MySQL database you are using
+# (set this to the external IP of the sql server you created)
+db-address=localhost
+db-name=captain_teach
+db-password=captain_teach
+db-user-name=captain_teach
+
+# The first time Captain Teach loads, it will add this user as an instructor
+# You're going to need to use google auth for this, so it's probably
+# easiest if it's a gmail address (I don't like this either).
+master-user=youremail@gmail.com
+
+# These are used to generate complete links when sending email to users
+server-name=yoursite.com
+sub-domain=www.
+
+# Mail Server information for sending email
+mail-enable=true
+mail-server=smtp.sendgrid.net
+mail-port=2525
+mail-username=username
+mail-password=password
+
+# The class-name, this should match ClassName in apache-vars
+class-name=test-class
+
+# Select the port that apache will redirect incomming traffic
+# This allows multiple instances of CT to run on the same machine
+# You probably don't need to change this
+ct-port=8080
+
+# Select the Storage Mode for Captain Teach
+# Either `cloud-storage` or `local`
+storage-mode=cloud-storage
+
+# If using cloud-storage:
+# The name of the bucket to use for file storage
+bucket=some-bucket-name/
+
+# If using cloud-storage:
+# The Cloud Storage REST API host
+# NOTE: currently, we're using an old version of
+# the aws package to allow connections to google
+# cloud storage, so changing this to amazon s3
+# will probably cause a failure.
+cloud-host=storage.googleapis.com
+
+# If using cloud-storage:
+# Authentication information for cloud storage
+cloud-access-key-id=YOUR-ACCESS-ID
+cloud-secret-key=YOUR-SECRET-KEY
+
+# where to store local files
+local-storage-path=/path/to/classfile/storage
+# the location of the 'zip' binary, used to create archives
+zip-binary=/usr/bin/zip
+# the location of the 'unzip' binary, used to extract archives
+unzip-binary=/usr/bin/unzip
+# the location of the 'tar' binary, used to extract only
+tar-binary=/bin/tar
+
+*** STOP
+
+12) if you're running tmux, create a new shell window so that you can
+keep the docker run in the foreground long-term.
+
+13) run captain teach, like this:
+
+sudo docker run --name captain_teach -i -t -v /home/<my-id>/ct-conf:/conf --rm -p 8080:8080 jbclements/captain-teach:57cf4b23
+
+This will keep docker in the foreground, so you can see it run.
+
+14) SOMETHING WILL GO WRONG. I pretty much promise it.
+
+In order to connect to the running container and see what's going wrong,
+go to another shell window (now you see why I told you to create another one in
+step 12) and run
+
+sudo docker exec -i -t captain-teach bash
+
+this will give you a new shell running in the container.
+
+You probably want to check out the files in
+
+/var/log/supervisor
+
+... which will contain the stdout and stderr of the running admiral-edu process.
+

@@ -14,5 +14,3 @@ run: all
 bash: all
 	$(RUN) /bin/bash
 
-debug: all
-	$(RUN) ./debug.sh
