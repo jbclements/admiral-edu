@@ -1,4 +1,4 @@
-FROM debian:8.5
+FROM ubuntu:14.04
 MAINTAINER John Clements <aoeudocker@brinckerhoff.org>
 
 WORKDIR /root
