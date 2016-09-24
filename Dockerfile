@@ -65,6 +65,7 @@ ADD code-mirror/lib /var/www/html/lib
 ADD html/logout.html /var/www/html/logout.html
 ADD docker/500.html /var/www/html/500.html
 ADD docker/503.html /var/www/html/503.html
+ADD docker/maintenance.html /var/www/html/maintenance.html
 ADD docker/auth.html /var/www/html/auth/index.html
 Add author-tool/AuthoringTool.html /var/www/html/AuthoringTool.html
 #
