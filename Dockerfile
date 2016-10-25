@@ -4,6 +4,7 @@ MAINTAINER John Clements <aoeudocker@brinckerhoff.org>
 WORKDIR /root
 USER root
 
+RUN echo "tmp"
 RUN apt-get update
 
 RUN apt-get install -y wget
@@ -36,8 +37,7 @@ RUN raco pkg install --no-setup --auto git://github.com/greghendershott/aws#f1bd
 RUN raco setup --no-docs aws
 
 ## NOTE: switching away from catalog lookup temporarily...
-RUN echo "hiya 57:e3:6d:cb"
-RUN raco pkg install --no-setup --auto git://github.com/jbclements/admiral-edu-server#master
+RUN raco pkg install --no-setup --auto git://github.com/jbclements/admiral-edu-server#3c48db0a8f2c10cea4dc3d66fd2fe9e005e29f10
 # RUN raco pkg install --auto admiral-edu-server
 RUN raco setup --no-docs admiral-edu
 
