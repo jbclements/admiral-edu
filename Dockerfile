@@ -16,9 +16,9 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install Racket
 #
 
-RUN wget https://mirror.racket-lang.org/installers/6.6/racket-6.6-x86_64-linux.sh
+RUN wget https://mirror.racket-lang.org/installers/6.7/racket-6.7-x86_64-linux.sh
 
-RUN sh ./racket-6.6-x86_64-linux.sh
+RUN sh ./racket-6.7-x86_64-linux.sh
 
 RUN ln -s /usr/racket/bin/racket /usr/local/bin/racket
 RUN ln -s /usr/racket/bin/raco /usr/local/bin/raco
@@ -36,8 +36,8 @@ RUN adduser --disabled-password --gecos "" admiraledu
 RUN raco pkg install --no-setup --auto git://github.com/greghendershott/aws#f1bd5f7736b787fd407ad39e1dd567df4e241191
 RUN raco setup --no-docs aws
 
-## NOTE: switching away from catalog lookup temporarily...
-RUN raco pkg install --no-setup --auto git://github.com/jbclements/admiral-edu-server#3c48db0a8f2c10cea4dc3d66fd2fe9e005e29f10
+## NOTE: specifying a commit explicitly makes this more robust, if slightly more work.
+RUN raco pkg install --no-setup --auto git://github.com/jbclements/admiral-edu-server#d58772ebf6e2e5dd19420f52d9f87a4784748b8a
 # RUN raco pkg install --auto admiral-edu-server
 RUN raco setup --no-docs admiral-edu
 
